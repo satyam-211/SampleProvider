@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sample_provider/state_management/consumer.dart';
 import 'package:sample_provider/state_management/observable.dart';
 import 'package:sample_provider/state_management/sample_provider.dart';
 
@@ -38,14 +39,19 @@ class MyHomePage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(title),
       ),
-      body: const Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
+            const Text(
               'You have pushed the button this many times:',
             ),
-            Counter(),
+            Consumer<int>(
+              builder: (context, observable) => Text(
+                '${observable.value}',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+            ),
           ],
         ),
       ),
@@ -57,44 +63,6 @@ class MyHomePage extends StatelessWidget {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
-  }
-}
-
-class Counter extends StatefulWidget {
-  const Counter({
-    super.key,
-  });
-
-  @override
-  State<Counter> createState() => _CounterState();
-}
-
-class _CounterState extends State<Counter> {
-  late final Observable<int> observable;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    observable = SampleProvider.of<int>(context);
-    observable.addObserver(rebuild);
-  }
-
-  void rebuild(int value) {
-    setState(() {});
-  }
-
-  @override
-  void dispose() {
-    observable.removeObserver(rebuild);
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      '${observable.value}',
-      style: Theme.of(context).textTheme.headlineMedium,
     );
   }
 }
